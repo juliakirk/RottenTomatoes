@@ -1,23 +1,13 @@
 # Load libraries
-import json, datetime, time, os
+import json, datetime, time, os, requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from webdriver_manager.firefox import GeckoDriverManager
-
-# Download and install the Chrome driver
-firefox_service = FirefoxService(GeckoDriverManager().install())
-
-firefox_options = webdriver.FirefoxOptions()
-firefox_options.page_load_strategy = 'eager'
-firefox_options.add_argument('--headless')
 
 # Record the current time
 current_timestamp = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
 # Hard-code in the URL we want
 # TODO: Soften this so we can get the information about any movie
-movie_url = 'https://www.rottentomatoes.com/m/the_marvels'
+movie_url = 'https://www.rottentomatoes.com/m/venom_the_last_dance'
 
 def rotten_tomatoes_soup(url):
     """
@@ -25,23 +15,14 @@ def rotten_tomatoes_soup(url):
 
     Takes `url` as a string and returns a Soup object.
     """
-    # Launch the driver
-    driver = webdriver.Firefox(options = firefox_options, service=firefox_service)
-    
     # Make the request
-    driver.get(url)
-
+    raw = requests.get(url).text
+    
     # Wait a few seconds for the page to load completely
     time.sleep(3)
     
-    # Get source
-    raw = driver.page_source.encode('utf-8')
-    
     # Convert to Soup
     soup = BeautifulSoup(raw,features='html.parser')
-    
-    # Quit the driver
-    driver.quit()
 
     return soup
 
@@ -59,10 +40,10 @@ def parse_data(soup,ts):
     
     details_d = {}
     details_d['timestamp'] = ts
-    details_d['average_rating'] = soup.find('rt-text',{'slot':'criticsScore'}).text
-    details_d['reviews_count'] = soup.find('rt-link',{'slot':'criticsReviews'}).text.strip()
-    details_d['average_rating'] = soup.find('rt-text',{'slot':'audienceScore'}).text
-    details_d['reviews_count'] = soup.find('rt-link',{'slot':'audienceReviews'}).text.strip()
+    details_d['critics_score'] = soup.find('rt-text',{'slot':'criticsScore'}).text
+    details_d['critics_count'] = soup.find('rt-link',{'slot':'criticsReviews'}).text.strip()
+    details_d['audience_score'] = soup.find('rt-text',{'slot':'audienceScore'}).text
+    details_d['audience_counts'] = soup.find('rt-link',{'slot':'audienceReviews'}).text.strip()
     return details_d
 
 def update_data(filename,data):
