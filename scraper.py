@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 
 # Record the current time
 current_timestamp = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-
 # Hard-code in the URL we want
 # TODO: Soften this so we can get the information about any movie
 movie_url = 'https://www.rottentomatoes.com/m/venom_the_last_dance'
