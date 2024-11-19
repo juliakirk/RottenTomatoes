@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 current_timestamp = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 # Hard-code in the URL we want
 # TODO: Soften this so we can get the information about any movie
-movie_url = 'https://www.rottentomatoes.com/m/venom_the_last_dance'
+movie_url = 'https://www.rottentomatoes.com/m/wicked_2024'
 
 def rotten_tomatoes_soup(url):
     """
